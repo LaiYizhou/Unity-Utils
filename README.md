@@ -68,14 +68,14 @@ A micro collection of unity3d utils for me and by me.
   }
   ```
 
-![20190710172035](_\20190710172035.jpg)
+![20190710172035](_/20190710172035.jpg)
 
 ​    
 
 
 - **EditorRename**
 
-  It can rename the field to show in Inspector panel.
+  It can rename the field which showed in Inspector panel.
 
   eg:
 
@@ -101,5 +101,5 @@ A micro collection of unity3d utils for me and by me.
   }
   ```
 
-  ![20190710172255](_\20190710172255.jpg)
+  ![20190710172255](_/20190710172255.jpg)
 
