@@ -8,6 +8,9 @@ using UnityEngine;
 public static class BitUtil
 {
 
+	public static int ALL_ZERO = 0;
+    public static int ALL_ONE = ~0;
+	
     public static int SetBit(this int A, int k, bool val)
     {
         if(k > 32)
