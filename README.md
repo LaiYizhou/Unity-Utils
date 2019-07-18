@@ -3,7 +3,24 @@
 A micro collection of unity3d utils for me and by me.
 
 ---
-- **BitUtil**
+
+- [**TimeUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/TimeUtil)
+
+  It can check daily function, such as daily login, daily bonus, daily puzzle
+
+  eg:
+
+  ```c#
+  int CheckDaily(DateTime now, DateTime last)
+  ```
+
+  ```c#
+  bool IsNewDay(DateTime now, DateTime last)
+  ```
+  
+  ​    
+
+- [**BitUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/BitUtil)
 
   It's about bit operation
 
@@ -31,7 +48,7 @@ A micro collection of unity3d utils for me and by me.
 
 ​    
 
-- **LINQUtil**
+- [**LINQUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/LINQUtil)
 
   It's extension based on LINQ
 
@@ -51,7 +68,7 @@ A micro collection of unity3d utils for me and by me.
 
 ​    
 
-- **EditorButton**
+- [**EditorButton**](https://github.com/LaiYizhou/Unity-Utils/tree/master/EditorButton)
 
   It can add buttons in Inspector panel in Unity3D with attribute.
 
@@ -72,8 +89,7 @@ A micro collection of unity3d utils for me and by me.
 
 ​    
 
-
-- **EditorRename**
+- [**EditorRename**](https://github.com/LaiYizhou/Unity-Utils/tree/master/EditorRename)
 
   It can rename the field which showed in Inspector panel.
 
