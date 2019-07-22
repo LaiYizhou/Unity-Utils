@@ -11,11 +11,12 @@ A micro collection of unity3d utils for me and by me.
   Note:
 
   ```c#
-  MinHeap<int[]> minHeap 
-  	= new MinHeap<int[]>(Comparer<int[]>.Create((a, b) => { return a[0] - b[0];}));
+  MinHeap<int[]> minHeap = new MinHeap<int[]>(Comparer<int[]>.Create((a, b) => { return a[0] - b[0];}));
   ```
 
   it can work in .NET 4.8 but *can't work in some Unity Editor*
+  
+  ​    
 
 - [**TimeUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/TimeUtil)
 
@@ -41,10 +42,6 @@ A micro collection of unity3d utils for me and by me.
 
   ```c#
   int SetBit(this int A, int k, bool val)
-  ```
-
-  ```c#
-  int ToggleBit(this int A, int k)
   ```
 
   ```c#
