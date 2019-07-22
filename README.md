@@ -4,6 +4,19 @@ A micro collection of unity3d utils for me and by me.
 
 ---
 
+- [**DataStructures**](https://github.com/LaiYizhou/Unity-Utils/tree/master/DataStructures)
+
+  It contains heap
+
+  Note:
+
+  ```c#
+  MinHeap<int[]> minHeap 
+  	= new MinHeap<int[]>(Comparer<int[]>.Create((a, b) => { return a[0] - b[0];}));
+  ```
+
+  it can work in .NET 4.8 but *can't work in some Unity Editor*
+
 - [**TimeUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/TimeUtil)
 
   It can check daily function, such as daily login, daily bonus, daily puzzle
@@ -17,7 +30,7 @@ A micro collection of unity3d utils for me and by me.
   ```c#
   bool IsNewDay(DateTime now, DateTime last)
   ```
-  
+
   ​    
 
 - [**BitUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/BitUtil)
@@ -28,10 +41,6 @@ A micro collection of unity3d utils for me and by me.
 
   ```c#
   int SetBit(this int A, int k, bool val)
-  ```
-
-  ```c#
-  int ClearBit(this int A, int k)
   ```
 
   ```c#
@@ -84,8 +93,7 @@ A micro collection of unity3d utils for me and by me.
       }
   }
   ```
-
-![20190710172035](_/20190710172035.jpg)
+  ![20190710172035](_/20190710172035.jpg)
 
 ​    
 
