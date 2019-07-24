@@ -18,6 +18,8 @@ A micro collection of unity3d utils for me and by me.
   
   ​    
 
+- [**LogUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/LogUtil)
+
 - [**TimeUtil**](https://github.com/LaiYizhou/Unity-Utils/tree/master/TimeUtil)
 
   It can check daily function, such as daily login, daily bonus, daily puzzle
