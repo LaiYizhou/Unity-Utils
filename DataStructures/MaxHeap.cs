@@ -7,14 +7,12 @@ using UnityEngine;
 public class MaxHeap<T>
 {
     private List<T> _collection { get; set; }
-    private Comparer<T> _heapComparer = Comparer<T>.Default;
+    private readonly Comparer<T> _heapComparer = Comparer<T>.Default;
 
-    public MaxHeap() : this(0, null) { }
-    public MaxHeap(int capacity) : this(capacity, null) { }
-    public MaxHeap(Comparer<T> comparer) : this(0, comparer) { }
-    public MaxHeap(int capacity, Comparer<T> comparer)
+    public MaxHeap() : this(Comparer<T>.Default) { }
+    public MaxHeap(Comparer<T> comparer)
     {
-        _collection = new List<T>(capacity);
+        _collection = new List<T>();
         _heapComparer = comparer ?? Comparer<T>.Default;
     }
 
@@ -23,82 +21,49 @@ public class MaxHeap<T>
         get { return _collection.Count; }
     }
 
-    public bool IsEmpty
+    private void Swim(int index)
     {
-        get { return (_collection.Count == 0); }
-    }
-
-    public T this[int index]
-    {
-        get
+        // swap when _collection[index] > _collection[parent]
+        while (index > 0 && _heapComparer.Compare(_collection[index], _collection[Parent(index)]) > 0)
         {
-            if (index < 0 || index > this.Count || this.Count == 0)
-                throw new IndexOutOfRangeException();
-
-            return _collection[index];
-        }
-        set
-        {
-            if (index < 0 || index >= this.Count)
-                throw new IndexOutOfRangeException();
-
-            _collection[index] = value;
-
-            if (_heapComparer.Compare(_collection[index], _collection[0]) >= 0)
-            {
-                T temp = _collection[0];
-                _collection[0] = _collection[index];
-                _collection[index] = temp;
-
-                _buildMaxHeap();
-            }
+            Swap(index, Parent(index));
+            index = Parent(index);
         }
     }
 
-    private void _buildMaxHeap()
+    private void Sink(int index)
     {
-        for (int node = _collection.Count / 2 - 1; node >= 0; node--)
+        while (LeftChild(index) < Count)
         {
-            _maxHeapify(node, _collection.Count);
+            int childIndex = LeftChild(index);
+            if (RightChild(index) < Count && _heapComparer.Compare(_collection[RightChild(index)], _collection[LeftChild(index)]) > 0)
+                childIndex = RightChild(index);
+
+            // break when _collection[index] > _collection[childIndex]
+            if (_heapComparer.Compare(_collection[index], _collection[childIndex]) > 0)
+                break;
+
+            Swap(index, childIndex);
+            index = childIndex;
         }
     }
 
-    private void _maxHeapify(int nodeIndex, int size)
+    public void Add(T value)
     {
-        while ((nodeIndex * 2) + 1 < size)
+        if (Count == 0)
         {
-            int childIndex = (nodeIndex * 2) + 1;
-            while (childIndex + 1 < size && _heapComparer.Compare(_collection[childIndex + 1], _collection[childIndex]) > 0)
-                childIndex++;
-
-            if (_heapComparer.Compare(_collection[childIndex], _collection[nodeIndex]) > 0)
-            {
-                T temp = _collection[childIndex];
-                _collection[childIndex] = _collection[nodeIndex];
-                _collection[nodeIndex] = temp;
-            }
-
-            nodeIndex = childIndex;
-
-        }
-    }
-
-    public void Insert(T heapKey)
-    {
-        if (IsEmpty)
-        {
-            _collection.Add(heapKey);
+            _collection.Add(value);
         }
         else
         {
-            _collection.Add(heapKey);
-            _buildMaxHeap();
+            _collection.Add(value);
+            Swim(_collection.Count - 1);
         }
     }
 
     public T Peek()
     {
-        if (IsEmpty)
+        if (Count == 0)
         {
             throw new Exception("Heap is empty.");
         }
@@ -106,38 +71,42 @@ public class MaxHeap<T>
         return _collection[0];
     }
 
-    public void Pop()
+    public T Pop()
     {
-        if (IsEmpty)
+        if (Count == 0)
         {
             throw new Exception("Heap is empty.");
         }
 
-        int min = 0;
-        int last = _collection.Count - 1;
+        T temp = _collection[0];
+        _collection[0] = _collection[Count - 1];
+        _collection.RemoveAt(Count - 1);
 
-        T temp = _collection[min];
-        _collection[min] = _collection[last];
-        _collection[last] = temp;
+        Sink(0);
 
-        _collection.RemoveAt(last);
-        last--;
-
-        _maxHeapify(0, last + 1);
+        return temp;
     }
 
-    public void Clear()
+    private static int Parent(int i)
     {
-        if (IsEmpty)
-        {
-            throw new Exception("Heap is empty.");
-        }
-
-        _collection.Clear();
+        return (i - 1) / 2;
     }
 
-    public List<T> ToList()
+    private static int RightChild(int i)
     {
-        return _collection;
+        return 2 * i + 2;
     }
+
+    private static int LeftChild(int i)
+    {
+        return 2 * i + 1;
+    }
+
+    private void Swap(int index1, int index2)
+    {
+        var temp = this._collection[index1];
+        this._collection[index1] = this._collection[index2];
+        this._collection[index2] = temp;
+    }
+
 }
