@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class PriorityQueue<T>
 {
     private List<T> _collection { get; set; }
