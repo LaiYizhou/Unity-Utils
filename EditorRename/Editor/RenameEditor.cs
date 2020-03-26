@@ -1,59 +1,62 @@
-﻿using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using UnityEngine;
+using System;
+#if UNITY_EDITOR
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
-using UnityEngine;
+using System.Reflection;
+#endif 
 
-namespace EditorRename
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(RenameAttribute))]
+public class RenameDrawer : PropertyDrawer
 {
-    [CanEditMultipleObjects]
-    [CustomPropertyDrawer(typeof(RenameAttribute))]
-    public class RenameEditor : PropertyDrawer
+    private RenameAttribute renameAttribute => (RenameAttribute)attribute;
+    private readonly Dictionary<string, string> customEnumNames = new Dictionary<string, string>();
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            RenameAttribute rename = (RenameAttribute)attribute;
-            label.text = rename.Name;
-
-            bool isElement = Regex.IsMatch(property.displayName, "Element \\d+");
-            if (isElement)
-                label.text = property.displayName;
-            if (property.propertyType == SerializedPropertyType.Enum)
-            {
-                DrawEnum(position, property, label);
-            }
-            else
-            {
-                EditorGUI.PropertyField(position, property, label, true);
-            }
-        }
-
-        private void DrawEnum(Rect position, SerializedProperty property, GUIContent label)
+        SetUpCustomEnumNames(property, property.enumNames);
+        if (property.propertyType == SerializedPropertyType.Enum)
         {
             EditorGUI.BeginChangeCheck();
-
-            Type type = fieldInfo.FieldType;
-            string[] names = property.enumNames;
-            string[] values = new string[names.Length];
-            Array.Copy(names, values, names.Length);
-            while (type != null && type.IsArray)
-                type = type.GetElementType();
-
-            for (int i = 0; i < names.Length; i++)
+            string[] displayedOptions = property.enumNames
+                .Where(enumName => customEnumNames.ContainsKey(enumName))
+                .Select<string, string>(enumName => customEnumNames[enumName])
+                .ToArray();
+            int selectedIndex = EditorGUI.Popup(position, renameAttribute.Name, property.enumValueIndex, displayedOptions);
+            if (EditorGUI.EndChangeCheck())
             {
-                FieldInfo info = type.GetField(names[i]);
-                RenameAttribute[] atts = (RenameAttribute[])info.GetCustomAttributes(typeof(RenameAttribute), true);
-                if (atts.Length != 0)
-                    values[i] = atts[0].Name;
+                property.enumValueIndex = selectedIndex;
             }
-
-            int index = EditorGUI.Popup(position, label.text, property.enumValueIndex, values);
-            if (EditorGUI.EndChangeCheck() && index != -1)
-                property.enumValueIndex = index;
         }
-
     }
 
-}
+    private void SetUpCustomEnumNames(SerializedProperty property, string[] enumNames)
+    {
+        Type type = property.serializedObject.targetObject.GetType();
+        foreach (FieldInfo fieldInfo in type.GetFields())
+        {
+            object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(RenameAttribute), false);
+            foreach (RenameAttribute customAttribute in customAttributes)
+            {
+                Type enumType = fieldInfo.FieldType;
+                foreach (string enumName in enumNames)
+                {
+                    FieldInfo field = enumType.GetField(enumName);
+                    if (field == null) continue;
+                    RenameAttribute[] attrs = (RenameAttribute[])field.GetCustomAttributes(customAttribute.GetType(), false);
 
+                    if (!customEnumNames.ContainsKey(enumName))
+                    {
+                        foreach (RenameAttribute labelAttribute in attrs)
+                        {
+                            customEnumNames.Add(enumName, labelAttribute.Name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+#endif
